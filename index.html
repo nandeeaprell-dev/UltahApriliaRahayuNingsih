@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Gift for Seventeen 💙</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #a1c4fd;
+      --secondary: #c2e9fb;
+      --accent: #6a82fb;
+      --text: #2d3748;
+      --glass: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.35);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fbc2eb);
+      background-size: 200% 200%;
+      animation: gradientShift 18s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: var(--text);
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    canvas#particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .card {
+      width: 380px;
+      max-width: 92%;
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(31,38,135,0.25);
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .hidden { display: none !important; }
+
+    .lock .display {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8rem;
+      letter-spacing: 14px;
+      margin: 20px 0 30px;
+      color: var(--accent);
+      text-shadow: 0 2px 10px rgba(106,130,251,0.4);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .key {
+      background: rgba(255,255,255,0.4);
+      border: none;
+      padding: 18px;
+      font-size: 1.4rem;
+      font-weight: 500;
+      border-radius: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s;
+    }
+
+    .key:hover {
+      background: rgba(255,255,255,0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(106,130,251,0.3);
+    }
+
+    .key:active { transform: scale(0.94); }
+
+    .header {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      margin-bottom: 16px;
+      color: var(--accent);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .swiper {
+      width: 100%;
+      height: 220px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin: 24px 0;
+    }
+
+    .swiper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 28px 0 20px;
+    }
+
+    .buttons button {
+      background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 50px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 4px 15px rgba(106,130,251,0.4);
+      transition: all 0.4s;
+    }
+
+    .buttons button:hover {
+      transform: translateY(-4px) scale(1.08);
+      box-shadow: 0 10px 25px rgba(106,130,251,0.5);
+    }
+
+    #content {
+      min-height: 180px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease;
+    }
+
+    #content.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .typing {
+      overflow: hidden;
+      border-right: 3px solid var(--accent);
+      white-space: nowrap;
+      margin: 0 auto;
+      animation: typing 3.5s steps(28, end) forwards, blink 0.8s infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--accent); }
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 24px 18px; }
+      .lock .display { font-size: 3rem; letter-spacing: 10px; }
+    }
+
+    .audio-note {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="card" id="lock">
+  <h2 style="margin-bottom:8px;">Virtual Gift 💙</h2>
+  <div class="display" id="display">────</div>
+
+  <div class="keypad">
+    <button class="key" onclick="press(1)">1</button>
+    <button class="key" onclick="press(2)">2</button>
+    <button class="key" onclick="press(3)">3</button>
+    <button class="key" onclick="press(4)">4</button>
+    <button class="key" onclick="press(5)">5</button>
+    <button class="key" onclick="press(6)">6</button>
+    <button class="key" onclick="press(7)">7</button>
+    <button class="key" onclick="press(8)">8</button>
+    <button class="key" onclick="press(9)">9</button>
+    <button class="key" onclick="clearPin()">C</button>
+    <button class="key" onclick="press(0)">0</button>
+    <button class="key" onclick="check()">OK</button>
+  </div>
+
+  <div class="audio-note">Soft piano birthday melody playing ♪</div>
+</div>
+
+<div class="card hidden" id="main">
+  <div class="header typing">Happy Birthday, Aprilia Rahayu Ningsih ✨</div>
+
+  <h3 style="margin:16px 0; font-weight:400; color:#4a5568;">For someone truly special🤍</h3>
+
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><img src="gambar/poto1.jpg" alt="poto 1"></div>
+      <div class="swiper-slide"><img src="gambar/poto2.jpg" alt="poto 2"></div>
+      <div class="swiper-slide"><img src="gambar/poto3.jpg" alt="poto 3"></div>
+      <div class="swiper-slide"><img src="gambar/poto4.jpg" alt="poto 4"></div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="showProfile()">Profile</button>
+    <button onclick="showMessage()">Message</button>
+    <button onclick="showLetter()">Read Letter</button>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<audio id="bgm" autoplay loop preload="auto" volume="0.2">
+  <source src="Audio.mp3" type="audio/mp3"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+// Swiper initialization
+new Swiper('.swiper', {
+  loop: true,
+  autoplay: { delay: 3500, disableOnInteraction: false },
+  pagination: { el: '.swiper-pagination', clickable: true },
+  effect: 'fade',
+  fadeEffect: { crossFade: true }
+});
+
+// PIN logic
+let pin = "";
+const correctPin = "1014";
+
+function press(n) {
+  if (pin.length < 4) {
+    pin += n;
+    update();
+  }
+}
+
+function update() {
+  document.getElementById("display").innerText = "●".repeat(pin.length) + "─".repeat(4 - pin.length);
+}
+
+function clearPin() {
+  pin = "";
+  update();
+}
+
+function check() {
+  if (pin === correctPin) {
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("main").classList.remove("hidden");
+    document.getElementById("content").classList.add("show");
+    startParticles();
+    // Naikkan volume sedikit saat unlock
+    const audio = document.getElementById("bgm");
+    audio.volume = 0.35;
+  } else {
+    alert("PIN Salah ♡ Try again");
+    clearPin();
+  }
+}
+
+// Content functions
+function showProfile() {
+  document.getElementById("content").innerHTML = `
+    <img src="gambar/poto5.jpg" style="border-radius:50%; 
+          width: 180px; height: 180px; 
+          margin: 25px auto; 
+          display: block; 
+          box-shadow: 0 8px 25px rgba(0,0,0,0.18); 
+          object-fit: cover;">
+    <p>A girl who is full of dreams,<br>strong yet gentle, and always shining ✨</p>
+  `;
+  document.getElementById("content").classList.add("show");
+}
+
+function showMessage() {
+  document.getElementById("content").innerHTML = `
+    <p style="font-size:1.3rem; margin:30px 0;">
+      Happy Birthday, my favorite human 💙<br>
+
+<h4>Hari ini hari spesial kamu.
+Aku cuma mau bilang terima kasih,
+Kamu itu bukan cuma pacar aku,
+kamu juga rumah buat aku.</h4><br>
+
+<h4>I just want you to know
+that I’m so lucky to have you.
+You are my happiness,
+my favorite person,
+and my best place to go home.</h4><br>
+
+<h4>Happy birthday, my love.
+I love you, always.
+May every day feel like magic. ✨</h4><br>
+    </p>
+  `;
+  document.getElementById("content").classList.add("show");
+}
+
+function showLetter() {
+  document.getElementById("content").innerHTML = `
+    <p style="margin-top:5px; font-size:1rem; line-height:1.6; text-align:left; padding:0 8px;">
+      Happy Birthday, Seventeen 💙<br><br>
+
+      Di usia baru ini, semoga setiap mimpi yang kamu tanam hari ini
+      perlahan mekar menjadi kenyataan yang indah.<br><br>
+
+      Terima kasih karena selalu jadi versi terbaik dari dirimu sendiri —
+      orang yang hangat, tulus, dan membuat dunia orang lain jadi lebih cerah.<br><br>
+
+      Semoga langkahmu ke depan penuh keberanian, tawa, dan cerita-cerita manis
+      yang kelak akan kamu ceritakan sambil tersenyum.<br><br>
+
+      Keep being the beautiful chaos that you are.<br>
+      <strong>Forever proud of you ✨</strong>
+    </p>
+  `;
+  document.getElementById("content").classList.add("show");
+}
+
+// Particles animation
+function startParticles() {
+  const canvas = document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let particles = [];
+
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      speed: Math.random() * 0.8 + 0.2,
+      color: `hsla(${Math.random()*60 + 180}, 70%, 70%, ${Math.random()*0.4 + 0.3})`
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+
+      p.y -= p.speed;
+      if (p.y < -10) p.y = canvas.height + 10;
+
+      p.x += Math.sin(p.y * 0.01) * 0.5;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+</script>
+
+</body>
+</html>
